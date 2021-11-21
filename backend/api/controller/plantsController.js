@@ -34,7 +34,10 @@ export default class PlantsController{
                 res.status(404).json({error:"Not found"});
                 return;
             }
-            let diseaseNames = await helper.parseDiseases(plant.diseases);
+            let diseaseNames;
+            if(plant.diseases){
+                diseaseNames = await helper.parseDiseases(plant.diseases);
+            }
             plant.disease_names = diseaseNames;
             res.json(plant);
         
