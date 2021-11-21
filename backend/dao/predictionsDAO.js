@@ -29,7 +29,7 @@ export default class PredictionsDAO{
 
     try {
       const predictionsList = await displayCursor.toArray();
-      const totalNumPredictions = await predictions.countDocuments(cursor);
+      const totalNumPredictions = await predictions.countDocuments();
 
       return {predictionsList, totalNumPredictions};
     } catch (e) {

@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 const PlantView = props => {
     const [plant, setPlant] = useState(null);
     const [diseases, setDiseases] = useState([]);
+    console.log(props);
     const plantName = props.match.params.id;
 
     useEffect(()=>{

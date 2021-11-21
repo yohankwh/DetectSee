@@ -63,7 +63,8 @@ export default class PredictionsController{
                 res.status(404).json({error:"Not found"});
                 return;
             }
-            res.json(prediction);
+            let parsedPrediction = await helper.parsePredictions([prediction]);
+            res.json(parsedPrediction[0]);
         
         }catch(err){
             console.log(`error fetching from param: ${err}`);

@@ -174,7 +174,7 @@ function App() {
                       <Predictor {...props} />
                     )}
                   />
-                  <Route exact path="/predict/results/:id"
+                  <Route exact path="/history/:id"
                     render={(props) => (
                       <PredictionView {...props} />
                     )}
