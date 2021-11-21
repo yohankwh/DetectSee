@@ -51,7 +51,7 @@ const PlantsList = props => {
                   {plants.map((plant) => {
                     return (
                       <div className="col-sm-4 mb-4 d-flex ps-0 pe-3">
-                        <a href="" className="normal-link shadow-sm border rounded w-100">
+                        <Link to={"/plants/"+plant.name} className="normal-link shadow-sm border rounded w-100">
                           <div className="resp-card-img rounded">
                             <img src="./assets/example.jpg" className="rounded-top" alt={plant.name}/>
                           </div>
@@ -60,7 +60,7 @@ const PlantsList = props => {
                                 <p className="mb-0 prev-pred-title">{plant.name}</p>
                             </div>
                           </div>
-                        </a>
+                        </Link>
                       </div>
                     );
                   })}

@@ -41,9 +41,9 @@ export default class PlantsController{
             plant.disease_names = diseaseNames;
             res.json(plant);
         
-          }catch(err){
+        }catch(err){
             console.log(`error fetching from param: ${err}`);
             res.status(500).json({error:err});
-          }
+        }
     }
 }

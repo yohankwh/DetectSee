@@ -47,6 +47,20 @@ export default class DiseasesDAO {
     }
   }
 
+  static async getDiseaseByParam(paramName){
+    try{
+      const disease = diseases.findOne({"name":paramName});
+      if(!disease){
+        return;
+      }
+      return disease;
+
+    }catch(err){
+      console.log(`Error Fetching Disease by PARAM: ${err}`);
+      throw error;
+    }
+  }
+
   //helper methods
   static async getDiseaseNameById(id){
     return await diseases.findOne({_id:ObjectId(id)});

@@ -54,4 +54,20 @@ export default class PredictionsController{
             res.status(500).json({error:err.message});
         }
     }
+
+    static async getPredictionById(req,res,next){
+        try{
+            let paramName = req.params.id || {};
+            let prediction = await PredictionsDAO.getPredictionById(paramName);
+            if(!prediction){
+                res.status(404).json({error:"Not found"});
+                return;
+            }
+            res.json(prediction);
+        
+        }catch(err){
+            console.log(`error fetching from param: ${err}`);
+            res.status(500).json({error:err});
+        }
+    }
 }

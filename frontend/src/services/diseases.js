@@ -1,17 +1,17 @@
 import http from '../http-common';
 
-class PlantDataService{
-    getAll(page = 0){
-        return http.get(`/plants?page=${page}`);
-    }
+class DiseaseDataService{
+    // getAll(page = 0){
+    //     return http.get(`/plants?page=${page}`);
+    // }
 
     get(name) {
-        console.log(`/plants/${name}`);
-        return http.get(`/plants/${name}`);
+        console.log(`/diseases/${name}`);
+        return http.get(`/diseases/${name}`);
     }
 
     find(query, page = 0) {
-        return http.get(`/plants?${"name"}=${query}&page=${page}`);
+        return http.get(`/diseases?${"name"}=${query}&page=${page}`);
     } 
 
     // createReview(data) {
@@ -23,4 +23,4 @@ class PlantDataService{
     // }
 }
 
-export default new PlantDataService();
+export default new DiseaseDataService();

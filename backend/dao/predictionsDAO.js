@@ -64,4 +64,18 @@ export default class PredictionsDAO{
       return {error:err};
     }
   }
+
+  static async getPredictionById(predictionId){
+    try{
+      const prediction = predictions.findOne({_id:ObjectId(predictionId)});
+      if(!prediction){
+        return;
+      }
+      return prediction;
+
+    }catch(err){
+      console.log(`Error Fetching Disease by ID: ${err}`);
+      throw err;
+    }
+  }
 }

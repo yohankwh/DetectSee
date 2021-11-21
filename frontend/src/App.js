@@ -159,38 +159,34 @@ function App() {
           <div className="col p-4 pb-2">
               <div className="content-section p-2 h-100 scrollable-section">
                 <Switch>
-                  <Route 
-                    exact path="/"
+                  <Route exact path="/"
                     render={(props) => (
                       <Home {...props} />
                     )}
                   />
-                  <Route 
-                    path="/plants"
+                  <Route exact path="/plants"
                     render={(props) => (
                       <PlantsList {...props} />
                     )}
                   />
-                  <Route 
-                    path="/predict"
+                  <Route exact path="/predict"
                     render={(props) => (
                       <Predictor {...props} />
                     )}
                   />
-                  <Route 
-                    path="/xD"
+                  <Route exact path="/predict/results/:id"
                     render={(props) => (
                       <PredictionView {...props} />
                     )}
                   />
                   <Route 
-                    path="/plants/id"
+                    path="/plants/:id"
                     render={(props) => (
                       <PlantView {...props} />
                     )}
                   />
                   <Route 
-                    path="/diseases/id"
+                    path="/diseases/:id"
                     render={(props) => (
                       <DiseaseView {...props} />
                     )}

@@ -26,4 +26,20 @@ export default class DiseasesController{
         res.json(response);
     }
 
+    static async getDiseaseByParam(req, res, next){
+        try{
+            let paramName = req.params.name || {};
+            let disease = await DiseasesDAO.getDiseaseByParam(paramName);
+            if(!disease){
+                res.status(404).json({error:"Not found"});
+                return;
+            }
+            res.json(disease);
+        
+        }catch(err){
+            console.log(`error fetching from param: ${err}`);
+            res.status(500).json({error:err});
+        }
+    }
+
 }
