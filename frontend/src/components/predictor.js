@@ -17,6 +17,7 @@ const Predictor = props => {
     const [interClassModels, setInterClassModels] = useState(null);
     //attributes
     const [imageUrl, setImageUrl] = useState(null);
+    const [imageUp, setImageUp] = useState(null);
     const [predUrl, setPredUrl] = useState(null);
     //results
     const [predClass, setPredClass] = useState(null);
@@ -67,8 +68,10 @@ const Predictor = props => {
         if(files.length>0){
             const url = URL.createObjectURL(files[0]);
             setImageUrl(url);
+            setImageUp(files[0]);
         }else{
             setImageUrl(null);
+            setImageUp(null);
         }
     }
 
@@ -134,16 +137,15 @@ const Predictor = props => {
         setPredInterClass(predictedClassInter);
         setPredAcc(maxAccInter);
 
-        const predictionData = {
-            "plant_name":classLabel,
-            "disease_name":predictedClassInter,
-            "confidence":parseFloat(maxAccInter),
-            "image_url":"www.example.com"
-        };
+        const formData = new FormData();
+        formData.append("plant_name",classLabel);
+        formData.append("disease_name",predictedClassInter);
+        formData.append("confidence",parseFloat(maxAccInter));
+        formData.append("image_plant",imageUp);
 
         //submit post data
         setIsSubmitting(true);
-        PredictionDataService.post(predictionData)
+        PredictionDataService.post(formData)
         .then((res)=>{
             setPredUrl(res.data.inserted_id);
             setIsSubmitting(false);

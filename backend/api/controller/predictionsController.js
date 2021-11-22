@@ -31,14 +31,14 @@ export default class PredictionsController{
             console.log("MATCH THIS: "+diseaseName+" : "+disease_id);
 
             const confidence = req.body.confidence;
-            const imageUrl = req.body.image_url;
+            const image_plant = req.file.path;
             const date = new Date();
 
             const PredictionsResponse = await PredictionsDAO.addPrediction(
                 plant_id,
                 disease_id,
                 confidence,
-                imageUrl,
+                image_plant,
                 date
             )
 

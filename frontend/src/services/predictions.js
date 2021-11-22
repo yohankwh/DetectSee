@@ -1,4 +1,5 @@
 import http from '../http-common';
+import httpMulti from '../http-multi';
 
 class PredictionDataService{
 
@@ -16,7 +17,7 @@ class PredictionDataService{
     }
     
     post(predictionData){
-        return http.post('/predictions', predictionData);
+        return httpMulti.post('/predictions', predictionData);
     }
 }
 
