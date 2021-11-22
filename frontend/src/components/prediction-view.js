@@ -60,17 +60,33 @@ const PredictionView = props => {
                             <div className="predictions">
                                 <ol className="ps-3">
                                     <li>
-                                        <div className="prediction-item mb-5 border-bottom">
-                                            <h4 className=""><a href="">{diagnosis.plant_name}</a> <a href="">{diagnosis.disease_name}</a></h4>
+                                        <div className="prediction-item mb-5 border-bottom w-75">
+                                            <h4 className="">
+                                                <Link to={"/plants/"+diagnosis.plant_name}>{diagnosis.plant_name}</Link><span> </span>
+                                                {diagnosis.disease_name==="Sehat" ?
+                                                    "Sehat" 
+                                                    :
+                                                    <Link to={"/diseases/"+diagnosis.disease_name}>{diagnosis.disease_name}</Link>
+                                                }
+                                            </h4>
                                             <p>Confidence: {parseInt(parseFloat(diagnosis.confidence)*100)+"%"}</p>
-                                            <div className="pt-3 mb-2">
-                                                <h5>Gejala</h5>
-                                                <ul className="ps-3">
-                                                    <li>Deez</li>
-                                                    <li>Nuts</li>
-                                                </ul>
-                                            </div>
-                                            <p><a href="">Lihat Halaman Hama</a></p>
+
+                                            {diagnosis.disease_name==="Sehat" ?
+                                                <div className="pt-3 mb-3">
+                                                    <h5>Kerja yang baik! Tanaman Anda Sehat</h5>
+                                                </div>   
+                                            :
+                                                <>
+                                                    <div className="pt-3 mb-2">
+                                                        <h5>Gejala</h5>
+                                                        <ul className="ps-3">
+                                                            <li>Deez</li>
+                                                            <li>Nuts</li>
+                                                        </ul>
+                                                    </div>        
+                                                    <p><a href="">Lihat Halaman Hama</a></p>
+                                                </>
+                                            }
                                         </div>
                                     </li>
                                     <li>

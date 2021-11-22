@@ -1,19 +1,23 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {Link} from 'react-router-dom';
 import * as tf from '@tensorflow/tfjs';
-import ModelList from '../tensorflow/model-list'
+import ModelList from '../tensorflow/model-list';
+import PredictionDataService from '../services/predictions';
 
 const Predictor = props => {
     //terminologies: Class -> Jenis Tanaman | InterClass/Type -> Jenis Penyakit
-    const classes = ["Kacang","Tomat"];//entar fetch lewat helper
+    const classes = ["Kacang Panjang","Tomat"];//entar fetch lewat helper
 
     //statuses
     const [isModelLoading, setIsModelLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [hasPredicted, setHasPredicted] = useState(false);
     //models
     const [classModel, setClassModel] = useState(null);
     const [interClassModels, setInterClassModels] = useState(null);
     //attributes
     const [imageUrl, setImageUrl] = useState(null);
+    const [predUrl, setPredUrl] = useState(null);
     //results
     const [predClass, setPredClass] = useState(null);
     const [predInterClass, setPredInterClass] = useState(null);
@@ -29,7 +33,7 @@ const Predictor = props => {
     const loadMainModel = async () => {
         setIsModelLoading(true);
         try{
-            const mainModel = await tf.loadGraphModel('models/Kacang/model.json');
+            const mainModel = await tf.loadGraphModel('models/Kacang Panjang/model.json');
             setClassModel(mainModel);
             setIsModelLoading(false);
             console.log("finished loading main model");
@@ -94,6 +98,7 @@ const Predictor = props => {
 
     const identify = async () => {
         //convert image
+        setHasPredicted(true);
         const imageTensor = tf.browser.fromPixels(imageRef.current);
         const newImage = tf.cast(
             tf.image.resizeBilinear(imageTensor, [200, 200]),
@@ -110,15 +115,9 @@ const Predictor = props => {
         let maxAcc = Math.max.apply(Math,classResults);
         const classLabel = classes[classResults.indexOf(maxAcc)];
         setPredClass(classLabel);
-        console.log("CLASS YANG ADA:")
-        console.log(classes);
-        console.log("CLASS RESULTS:")
-        console.log(classResults)
-        console.log("JADI KELASNYA ADALAH:")
-        console.log(classLabel)
+
         let interModel = interClassModels[classLabel];
 
-        console.log("INTERMODELNYA ADALAH:");
         console.log(interModel);
 
         //do interclass prediction: determining plant diseasess
@@ -128,12 +127,31 @@ const Predictor = props => {
         //calculate end prediction result
         console.log(interClassResults)
         let maxAccInter = Math.max.apply(Math,interClassResults);
+        console.log("max disease: "+interClassResults.indexOf(maxAccInter));
         let predictedClassInter = classLabels[interClassResults.indexOf(maxAccInter)];
+        console.log("dieases is: "+predictedClassInter);
         maxAccInter = maxAccInter.toFixed(2);
-        console.log("Kelas: "+predictedClassInter);
         setPredInterClass(predictedClassInter);
-        console.log("Akurasi: "+maxAccInter);
         setPredAcc(maxAccInter);
+
+        const predictionData = {
+            "plant_name":classLabel,
+            "disease_name":predictedClassInter,
+            "confidence":parseFloat(maxAccInter),
+            "image_url":"www.example.com"
+        };
+
+        //submit post data
+        setIsSubmitting(true);
+        PredictionDataService.post(predictionData)
+        .then((res)=>{
+            setPredUrl(res.data.inserted_id);
+            setIsSubmitting(false);
+        })
+        .catch((err)=>{
+            console.log(err);
+            setIsSubmitting(false);
+        })
     }
 
     return (
@@ -179,103 +197,120 @@ const Predictor = props => {
                         }
                     </div>
                 </div>
-                <div className="d-flex justify-content-center">
-                    <div className="mb-3 py-3 text-center">
-                        <h4>Hasil Diagnosis</h4>
-                        <div className="rounded">
-                            <small>Tanaman Anda mungkin termasuk dari salah satu penyakit di bawah ini.</small>
-                        </div>
-                    </div>
-                </div>
-                <div className="pred-card-wrap w-75 m-auto flex-row mb-4">
-                    <div className="pred-card border rounded shadow-sm p-3 pb-2 w-75 m-auto">
-                        <div>
-                            <div className="pb-2">
-                                <div className="d-flex">
-                                    <div className="col">
-                                        <p className="text-end mb-0 font-08em"><i>Confidence: {parseInt(parseFloat(predAcc)*100)}%</i></p>
-                                        <h5 className="mb-0">{predClass+" "+predInterClass}</h5>
-                                        <p className="text-secondary mb-0">Deezospora Nuterillo</p>
+                {hasPredicted && 
+                    <>
+                        {!isSubmitting && predInterClass ?
+                            <>
+                                <div className="d-flex justify-content-center">
+                                    <div className="mb-3 py-3 text-center">
+                                        <h4>Hasil Diagnosis</h4>
+                                        <div className="rounded">
+                                            <small>Diagnosis yang mungkin untuk Tanaman Anda</small>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="d-flex justify-content-center">
-                                <button className="btn collapse-btn" data-toggle="collapse" data-target="#pred-1"
-                                aria-expanded="false" aria-controls="pred-1">
-                                    <p className="mb-0 text-center text-secondary font-08em">&#8595; klik untuk detail &#8595;</p>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="collapse show" id="pred-1">
-                            <div className="pred-card-images container py-2">
-                                <div className="row justify-content-center">
-                                    <div className="col-3 px-0">
-                                        <img src="./assets/example.jpg" className="rounded"/>
-                                    </div>
-                                    <div className="col-3 px-0 mx-3">
-                                        <img src="./assets/example.jpg" className="rounded"/>
-                                    </div>
-                                    <div className="col-3 px-0">
-                                        <img src="./assets/example.jpg" className="rounded"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="pt-3">
-                                <h5>Gejala</h5>
-                                <ul className="ps-3">
-                                    <li>Deez</li>
-                                    <li>Nuts</li>
-                                </ul>
-                            </div>
-                            <p className="text-end"><a href="">Lihat Selengkapnya</a></p>
-                        </div>
-                    </div>
-                </div>
-                <div className="pred-card-wrap w-75 m-auto flex-row mb-4">
-                    <div className="pred-card border rounded shadow-sm p-3 pb-2 w-75 m-auto">
-                        <div>
-                            <div className="pb-2">
-                                <div className="d-flex">
-                                    <div className="col">
-                                        <p className="text-end mb-0 font-08em"><i>Confidence: 69%</i></p>
-                                        <h5 className="mb-0">Tanaman Hama Tulis</h5>
-                                        <p className="text-secondary mb-0">Deezospora Nuterillo</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="d-flex justify-content-center">
-                                <button className="btn collapse-btn"
-                                data-toggle="collapse" data-target="#pred-2"
-                                aria-expanded="false" aria-controls="pred-2">
-                                    <p className="mb-0 text-center text-secondary font-08em">klik untuk detail</p>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="collapse" id="pred-2">
-                            <div className="pred-card-images container py-2">
-                                <div className="row justify-content-center">
-                                    <div className="col-3 px-0">
-                                        <img src="assets/example.jpg" className="rounded"/>
-                                    </div>
-                                    <div className="col-3 px-0 mx-3">
-                                        <img src="assets/example.jpg" className="rounded"/>
-                                    </div>
-                                    <div className="col-3 px-0">
-                                        <img src="assets/example.jpg" className="rounded"/>
+                                <div className="pred-card-wrap w-75 m-auto flex-row mb-4">
+                                    <div className="pred-card border rounded shadow-sm p-3 pb-2 w-75 m-auto">
+                                        <div>
+                                            <div className="pb-3">
+                                                <div className="d-flex">
+                                                    <div className="col">
+                                                        <p className="text-end mb-0 font-08em"><i>Confidence: {parseInt(parseFloat(predAcc)*100)}%</i></p>
+                                                        <h5 className="mb-0">{predClass+" "+predInterClass}</h5>
+                                                        <p className="text-secondary mb-0">Deezospora Nuterillo</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className="pred-card-images container py-2">
+                                                <div className="row justify-content-center">
+                                                    <div className="col-3 px-0">
+                                                        <img src="./assets/example.jpg" className="rounded"/>
+                                                    </div>
+                                                    <div className="col-3 px-0 mx-3">
+                                                        <img src="./assets/example.jpg" className="rounded"/>
+                                                    </div>
+                                                    <div className="col-3 px-0">
+                                                        <img src="./assets/example.jpg" className="rounded"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {
+                                                predInterClass==="Sehat"?
+                                                <div className="pt-3">
+                                                    <h5 className="text-center">Tanaman Anda Sehat!</h5>
+                                                </div>
+                                                :
+                                                <div className="pt-3">
+                                                    <h5>Gejala</h5>
+                                                    <ul className="ps-3">
+                                                        <li>Deez</li>
+                                                        <li>Nuts</li>
+                                                    </ul>
+                                                </div>
+                                            }
+                                            
+                                            <p className="text-end"><Link to={"/history/"+predUrl}>Lihat Selengkapnya</Link></p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="pt-3">
-                                <h5>Gejala</h5>
-                                <ul className="ps-3">
-                                    <li>Deez</li>
-                                    <li>Nuts</li>
-                                </ul>
-                            </div>
-                            <p className="text-end"><a href="">Lihat Selengkapnya</a></p>
-                        </div>
-                    </div>
-                </div>
+                                <div className="pred-card-wrap w-75 m-auto flex-row mb-4">
+                                    <div className="pred-card border rounded shadow-sm p-3 pb-2 w-75 m-auto">
+                                        <div>
+                                            <div className="pb-2">
+                                                <div className="d-flex">
+                                                    <div className="col">
+                                                        <p className="text-end mb-0 font-08em"><i>Confidence: 69%</i></p>
+                                                        <h5 className="mb-0">Tanaman Hama Tulis</h5>
+                                                        <p className="text-secondary mb-0">Deezospora Nuterillo</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="d-flex justify-content-center">
+                                                <button className="btn collapse-btn"
+                                                data-toggle="collapse" data-target="#pred-2"
+                                                aria-expanded="false" aria-controls="pred-2">
+                                                    <p className="mb-0 text-center text-secondary font-08em">klik untuk detail</p>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="collapse" id="pred-2">
+                                            <div className="pred-card-images container py-2">
+                                                <div className="row justify-content-center">
+                                                    <div className="col-3 px-0">
+                                                        <img src="assets/example.jpg" className="rounded"/>
+                                                    </div>
+                                                    <div className="col-3 px-0 mx-3">
+                                                        <img src="assets/example.jpg" className="rounded"/>
+                                                    </div>
+                                                    <div className="col-3 px-0">
+                                                        <img src="assets/example.jpg" className="rounded"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="pt-3">
+                                                <h5>Gejala</h5>
+                                                <ul className="ps-3">
+                                                    <li>Deez</li>
+                                                    <li>Nuts</li>
+                                                </ul>
+                                            </div>
+                                            <p className="text-end"><a href="">Lihat Selengkapnya</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                            :
+                            <>
+                                <div className="d-flex justify-content-center">
+                                    <img className="loading-mini" src={process.env.PUBLIC_URL + 'assets/spinner.svg'} alt="loading"/>
+                                </div>
+                                <p className="text-center"><b>Model is Predicting</b></p>
+                            </>
+                        }
+                    </>
+                }
             </div>
         </>
     );

@@ -4,7 +4,7 @@ import helper from './helpers/helper.js';
 
 export default class PredictionsController{
     static async getPredictions(req, res, next){
-        const predictionsPerPage = req.query.predictionsPerPage ? parseInt(predictionsPerPage, 10) : 5;
+        const predictionsPerPage = req.query.per_page ? parseInt(req.query.per_page, 10) : 5;
         const page = req.query.page ? parseInt(req.query.page) : 0;
 
         const {predictionsList, totalNumPredictions} = await PredictionsDAO.getPredictions({page, predictionsPerPage});
@@ -26,22 +26,27 @@ export default class PredictionsController{
             const plantName = req.body.plant_name;
             const diseaseName = req.body.disease_name;
 
-            const {plantId, diseaseId} = await helper.getIdForPredByName(plantName, diseaseName);
+            const {plant_id, disease_id} = await helper.getIdForPredByName(plantName, diseaseName);
+            console.log("MATCH: "+plantName+" : "+plant_id);
+            console.log("MATCH THIS: "+diseaseName+" : "+disease_id);
 
             const confidence = req.body.confidence;
             const imageUrl = req.body.image_url;
             const date = new Date();
 
             const PredictionsResponse = await PredictionsDAO.addPrediction(
-                plantId,
-                diseaseId,
+                plant_id,
+                disease_id,
                 confidence,
                 imageUrl,
                 date
             )
 
-            res.json({status:"success"});
+            console.log(PredictionsResponse);
+
+            res.json({status:"success",inserted_id:PredictionsResponse.insertedId});
         }catch(err){
+            console.log(err);
             res.status(500).json({error:err.message});
         }
     }

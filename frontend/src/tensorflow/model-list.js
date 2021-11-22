@@ -6,7 +6,7 @@ class ModelList{
     getClassNamesByPlant(plant_name){
         let classNames;
         switch(plant_name) {
-            case "Kacang":
+            case "Kacang Panjang":
               classNames = ["Sehat","Hama Tulis"];
               break;
             case "Cabai":

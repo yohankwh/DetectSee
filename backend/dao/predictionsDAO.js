@@ -15,7 +15,7 @@ export default class PredictionsDAO{
     }
   }
   
-  static async getPredictions({page = 0, predictionsPerPage = 5} = {}){
+  static async getPredictions({page = 0, predictionsPerPage = 10} = {}){
     let cursor;
     
     try {

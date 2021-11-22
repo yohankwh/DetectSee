@@ -38,7 +38,9 @@ export default class Helper{
     }
 
     static async getIdForPredByName(plant_name, disease_name){
+        console.log("PLANT: "+plant_name+"\nDISEASE: "+disease_name);
         const plantId = await PlantsDAO.getPlantIdByName(plant_name);
+        console.log("JADI IDNYA INI: "+plantId);
         const diseaseId = await DiseasesDAO.getDiseaseIdByName(disease_name);
 
         return {"plant_id":plantId, "disease_id":diseaseId};
