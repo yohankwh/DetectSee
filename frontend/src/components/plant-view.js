@@ -54,7 +54,7 @@ const PlantView = props => {
                                             <div className="col-sm-4 mb-4 d-flex ps-0 pe-3">
                                                 <Link to={"/diseases/"+disease} className="normal-link shadow-sm border rounded w-100">
                                                     <div className="resp-card-img rounded">
-                                                        <img src="./assets/example.jpg" className="rounded-top"/>
+                                                        <img src="/assets/example.jpg" className="rounded-top"/>
                                                     </div>
                                                     <div className="w-100 p-2">
                                                         <div>

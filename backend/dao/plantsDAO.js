@@ -65,4 +65,10 @@ export default class PlantsDAO {
     return await plants.findOne({_id:ObjectId(id)});
   }
 
+  static async getPlantIdByName(name){
+    const fetched = await plants.findOne({"name":name});
+    console.log("FETCHED NAME:"+fetched.name+" "+fetched._id);
+    return fetched.id;
+  }
+
 }

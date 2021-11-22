@@ -23,9 +23,11 @@ export default class PredictionsController{
 
     static async postPrediction(req,res,next){
         try{
-            const plantId = req.body.plant_id;
-            const diseaseId = req.body.disease_id;
-            //const userId =
+            const plantName = req.body.plant_name;
+            const diseaseName = req.body.disease_name;
+
+            const {plantId, diseaseId} = await helper.getIdForPredByName(plantName, diseaseName);
+
             const confidence = req.body.confidence;
             const imageUrl = req.body.image_url;
             const date = new Date();

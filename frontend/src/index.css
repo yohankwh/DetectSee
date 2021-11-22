@@ -175,6 +175,11 @@ body {
   height: 12rem;
   width: 12rem;
 }
+.image-holder img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
 
 .pred-card-images img{
   width: 100%;
@@ -232,4 +237,8 @@ body {
 .single-pred-img{
   width: 100%;
   height: 8rem;
+}
+
+.loading-i{
+  height: 3em;
 }

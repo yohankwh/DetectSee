@@ -65,4 +65,10 @@ export default class DiseasesDAO {
   static async getDiseaseNameById(id){
     return await diseases.findOne({_id:ObjectId(id)});
   }
+
+  static async getDiseaseIdByName(name){
+    const fetched = await diseases.findOne({"name":name});
+    console.log("FETCHED DISEASE:"+fetched.name+" "+fetched._id);
+    return fetched.id;
+  }
 }

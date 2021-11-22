@@ -20,7 +20,7 @@ function App() {
         <div className="top-nav d-flex justify-content-between align-items-center">
             <div className="left-nav col d-flex align-items-center">
                 <div className="logo d-flex align-items-center">
-                    <img className="logo-png" src='./assets/logo.png' alt='logo'/>
+                    <img className="logo-png" src='/assets/logo.png' alt='logo'/>
                 </div>
                 <div className="site-title d-flex align-items-center">
                     <Link to={'/'} className="normal-link">
@@ -55,7 +55,7 @@ function App() {
             </div>
             <div className="col">
               <Link to={'/predict'}>
-                <img src="./assets/scanner.png" className="alt-nav-icon-img" alt="predict icon"/>
+                <img src="/assets/scanner.png" className="alt-nav-icon-img" alt="predict icon"/>
               </Link>
             </div>
             <div className="col">
@@ -112,7 +112,7 @@ function App() {
                             <Link to={"/predict"} className="normal-link normal-nav">
                                 <div className="h-100 d-flex justify-content-between p-2 align-items-center">
                                     <div className="col-3 d-flex justify-content-center align-items-center">
-                                        <img src="./assets/scanner3.png" style={{height:'2rem',width:'2rem'}} alt="predict icon"/>
+                                        <img src="/assets/scanner3.png" style={{height:'2rem',width:'2rem'}} alt="predict icon"/>
                                     </div>
                                     <div className="col-8 d-flex align-items-center">
                                         <p className="mb-0 sidenav-item-text">Deteksi</p>

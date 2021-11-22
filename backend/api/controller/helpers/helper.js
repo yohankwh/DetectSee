@@ -36,4 +36,11 @@ export default class Helper{
 
         return disease_list;
     }
+
+    static async getIdForPredByName(plant_name, disease_name){
+        const plantId = await PlantsDAO.getPlantIdByName(plant_name);
+        const diseaseId = await DiseasesDAO.getDiseaseIdByName(disease_name);
+
+        return {"plant_id":plantId, "disease_id":diseaseId};
+    }
 }
