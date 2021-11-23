@@ -43,7 +43,7 @@ const PredictionView = props => {
                                 <div className="col-sm-8 mb-4 d-flex ps-0 pe-3">
                                     <div className="normal-link w-100">
                                         <div className="single-pred-img rounded">
-                                            <img src="/assets/example.jpg" className="rounded-top"/>
+                                            <img src={"http://localhost:5000/"+diagnosis.image_url} className="rounded"/>
                                         </div>
                                         <div className="w-100 p-2">
                                             <span>

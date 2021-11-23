@@ -53,7 +53,7 @@ const PlantsList = props => {
                       <div className="col-sm-4 mb-4 d-flex ps-0 pe-3">
                         <Link to={"/plants/"+plant.name} className="normal-link shadow-sm border rounded w-100">
                           <div className="resp-card-img rounded">
-                            <img src="./assets/example.jpg" className="rounded-top" alt={plant.name}/>
+                            <img src={"http://localhost:5000"+plant.image_url} className="rounded-top" alt={plant.name}/>
                           </div>
                           <div className="w-100 p-2">
                             <div>

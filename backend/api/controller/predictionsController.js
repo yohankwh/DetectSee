@@ -32,13 +32,14 @@ export default class PredictionsController{
 
             const confidence = req.body.confidence;
             const image_plant = req.file.path;
+            
             const date = new Date();
 
             const PredictionsResponse = await PredictionsDAO.addPrediction(
                 plant_id,
                 disease_id,
                 confidence,
-                image_plant,
+                image_plant.replace("\\","/"),
                 date
             )
 

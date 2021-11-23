@@ -38,7 +38,7 @@ const PredictionsList = props => {
                                             <div className="col-sm-4 mb-5 d-flex ps-0 pe-3">
                                                 <Link to={"/history/"+pred._id} className="normal-link shadow-sm border rounded w-100">
                                                     <div className="resp-card-img rounded">
-                                                        <img src="assets/example.jpg" className="rounded-top"/>
+                                                        <img src={"http://localhost:5000/"+pred.image_url} className="rounded-top"/>
                                                     </div>
                                                     <div className="w-100 p-2">
                                                         <div>
