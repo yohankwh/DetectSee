@@ -81,7 +81,7 @@ const Home = props => {
                                                 </div>
                                                 <div className="w-100 p-2">
                                                     <div>
-                                                        <p className="mb-0 prev-pred-title">Predicted {pred.plant_name} {pred.disease_name}</p>
+                                                        <p className="mb-0 prev-pred-title">{pred.plant_name} {pred.disease_name}</p>
                                                     </div>
                                                     <span>
                                                         <small>

@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 const PlantView = props => {
     const [plant, setPlant] = useState(null);
     const [diseases, setDiseases] = useState([]);
-    console.log(props);
+    const [diseaseImgs, setDiseaseImgs] = useState([]);
     const plantName = props.match.params.id;
 
     useEffect(()=>{
@@ -18,6 +18,16 @@ const PlantView = props => {
             console.log(res);
             setPlant(res.data.name);
             setDiseases(res.data.disease_names ? res.data.disease_names : []);
+            const fetched = res.data.disease_names;
+            const imgs = [];
+            fetched.forEach((val, idx)=>{
+                let img = "http://localhost:5000/uploads/diseases/"+res.data.name+"-"+val+"-1.jpg";
+                console.log(img+"A")
+                img = img.replace(/\s/g, "_");
+                console.log(img+"B")
+                imgs.push(img);
+            });
+            setDiseaseImgs(imgs);
         })
         .catch(err => console.log(err))
     };
@@ -49,12 +59,12 @@ const PlantView = props => {
                             <div className="prev-preds container">
                                 <div className="row">
                                     {diseases.length>0 ? 
-                                        diseases.map((disease) => {
+                                        diseases.map((disease, idx) => {
                                             return (
-                                            <div className="col-sm-4 mb-4 d-flex ps-0 pe-3">
+                                            <div key={idx} className="col-sm-4 mb-4 d-flex ps-0 pe-3">
                                                 <Link to={"/diseases/"+disease} className="normal-link shadow-sm border rounded w-100">
                                                     <div className="resp-card-img rounded">
-                                                        <img src="/assets/example.jpg" className="rounded-top"/>
+                                                        <img src={diseaseImgs[idx]} className="rounded-top"/>
                                                     </div>
                                                     <div className="w-100 p-2">
                                                         <div>

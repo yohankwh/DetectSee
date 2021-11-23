@@ -45,4 +45,8 @@ export default class Helper{
 
         return {"plant_id":plantId, "disease_id":diseaseId};
     }
+
+    static async getDiSeaseImagesById(plant_id, disease_id){
+        
+    }
 }

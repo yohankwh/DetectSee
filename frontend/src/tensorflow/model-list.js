@@ -7,7 +7,7 @@ class ModelList{
         let classNames;
         switch(plant_name) {
             case "Kacang Panjang":
-              classNames = ["Sehat","Hama Tulis"];
+              classNames = ["Sehat","Hama Pengorok Daun"];
               break;
             case "Cabai":
               // code block
@@ -16,7 +16,7 @@ class ModelList{
                 // code block
                 break;
             case "Tomat":
-                classNames = ["Hama Tulis","Sehat"];
+                classNames = ["Hama Pengorok Daun","Sehat"];
                 // code block
                 break;
             default:

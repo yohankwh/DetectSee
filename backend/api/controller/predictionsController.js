@@ -4,7 +4,7 @@ import helper from './helpers/helper.js';
 
 export default class PredictionsController{
     static async getPredictions(req, res, next){
-        const predictionsPerPage = req.query.per_page ? parseInt(req.query.per_page, 10) : 5;
+        const predictionsPerPage = req.query.per_page ? parseInt(req.query.per_page, 10) : 10;
         const page = req.query.page ? parseInt(req.query.page) : 0;
 
         const {predictionsList, totalNumPredictions} = await PredictionsDAO.getPredictions({page, predictionsPerPage});

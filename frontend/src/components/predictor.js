@@ -19,6 +19,7 @@ const Predictor = props => {
     const [imageUrl, setImageUrl] = useState(null);
     const [imageUp, setImageUp] = useState(null);
     const [predUrl, setPredUrl] = useState(null);
+    const [sampleImgs, setSampleImgs] = useState([]);
     //results
     const [predClass, setPredClass] = useState(null);
     const [predInterClass, setPredInterClass] = useState(null);
@@ -121,18 +122,28 @@ const Predictor = props => {
 
         let interModel = interClassModels[classLabel];
 
-        console.log(interModel);
+        // console.log(interModel);
 
         //do interclass prediction: determining plant diseasess
         const classLabels = ModelList.getClassNamesByPlant(classes[classResults.indexOf(maxAcc)]);
         const interClassResults = await interModel.predict(predictme).dataSync();
 
         //calculate end prediction result
-        console.log(interClassResults)
+        // console.log(interClassResults)
         let maxAccInter = Math.max.apply(Math,interClassResults);
-        console.log("max disease: "+interClassResults.indexOf(maxAccInter));
+        // console.log("max disease: "+interClassResults.indexOf(maxAccInter));
         let predictedClassInter = classLabels[interClassResults.indexOf(maxAccInter)];
-        console.log("dieases is: "+predictedClassInter);
+
+        let examples = [];
+        for(let i=0;i<3;i++){
+            examples.push("http://localhost:5000/uploads/diseases/"+
+                            classLabel.replace(/\s/g, "_")+"-"
+                            +predictedClassInter.replace(/\s/g, "_")+"-"+(i+1)+".jpg");
+        }
+        setSampleImgs(examples);
+        console.log(examples);
+
+        // console.log("dieases is: "+predictedClassInter);
         maxAccInter = maxAccInter.toFixed(2);
         setPredInterClass(predictedClassInter);
         setPredAcc(maxAccInter);
@@ -227,15 +238,15 @@ const Predictor = props => {
                                         <div>
                                             <div className="pred-card-images container py-2">
                                                 <div className="row justify-content-center">
-                                                    <div className="col-3 px-0">
-                                                        <img src="./assets/example.jpg" className="rounded"/>
-                                                    </div>
-                                                    <div className="col-3 px-0 mx-3">
-                                                        <img src="./assets/example.jpg" className="rounded"/>
-                                                    </div>
-                                                    <div className="col-3 px-0">
-                                                        <img src="./assets/example.jpg" className="rounded"/>
-                                                    </div>
+                                                    {
+                                                        sampleImgs.map((sample)=>{
+                                                            return(
+                                                                <div className="col-3 px-0">
+                                                                    <img src={sample} className="rounded"/>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
                                                 </div>
                                             </div>
                                             {
