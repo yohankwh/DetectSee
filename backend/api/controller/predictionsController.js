@@ -27,8 +27,8 @@ export default class PredictionsController{
             const diseaseName = req.body.disease_name;
 
             const {plant_id, disease_id} = await helper.getIdForPredByName(plantName, diseaseName);
-            console.log("MATCH: "+plantName+" : "+plant_id);
-            console.log("MATCH THIS: "+diseaseName+" : "+disease_id);
+            // console.log("MATCH: "+plantName+" : "+plant_id);
+            // console.log("MATCH THIS: "+diseaseName+" : "+disease_id);
 
             const confidence = req.body.confidence;
             const image_plant = req.file.path;
@@ -39,11 +39,11 @@ export default class PredictionsController{
                 plant_id,
                 disease_id,
                 confidence,
-                image_plant.replace("\\","/"),
+                image_plant,
                 date
             )
 
-            console.log(PredictionsResponse);
+            // console.log(PredictionsResponse);
 
             res.json({status:"success",inserted_id:PredictionsResponse.insertedId});
         }catch(err){

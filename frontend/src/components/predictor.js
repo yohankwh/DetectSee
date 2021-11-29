@@ -6,15 +6,15 @@ import PredictionDataService from '../services/predictions';
 
 const Predictor = props => {
     //terminologies: Class -> Jenis Tanaman | InterClass/Type -> Jenis Penyakit
-    const classes = ["Kacang Panjang","Tomat"];//entar fetch lewat helper
+    const plantClasses = ["Cabai","Kacang Panjang","Timun","Tomat"];//entar fetch lewat helper
 
     //statuses
     const [isModelLoading, setIsModelLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasPredicted, setHasPredicted] = useState(false);
     //models
-    const [classModel, setClassModel] = useState(null);
-    const [interClassModels, setInterClassModels] = useState(null);
+    const [plantModel, setPlantModel] = useState(null);
+    const [diseaseModels, setDiseaseModels] = useState(null);
     //attributes
     const [imageUrl, setImageUrl] = useState(null);
     const [imageUp, setImageUp] = useState(null);
@@ -29,32 +29,34 @@ const Predictor = props => {
     const imageRef = useRef();
 
     useEffect(()=>{
-        loadMainModel();
+        loadMainModel();//load plant model, then load disease models
     },[]);
 
     const loadMainModel = async () => {
         setIsModelLoading(true);
         try{
-            const mainModel = await tf.loadGraphModel('models/Kacang Panjang/model.json');
-            setClassModel(mainModel);
+            const mainModel = await tf.loadGraphModel('models/Plant/no_gambas/model.json');
+            setPlantModel(mainModel);
             setIsModelLoading(false);
             console.log("finished loading main model");
 
-            loadInterClassModels();
+            loadDiseaseModels();
         }catch(err){
             console.log(err);
             setIsModelLoading(false);
         }
     }
 
-    const loadInterClassModels = async () => {
+    const loadDiseaseModels = async () => {
         const models = {};
         setIsModelLoading(true);
         try{
-            for(const class_name of classes ){
-                models[class_name] = await tf.loadGraphModel('models/'+class_name+'/model.json');
+            for(const class_name of plantClasses ){
+                if(class_name!=="Cabai"){
+                    models[class_name] = await tf.loadGraphModel('models/'+class_name+'/model.json');
+                }
             }
-            setInterClassModels(models);
+            setDiseaseModels(models);
             setIsModelLoading(false);
             console.log("finished loading all models");
             console.log(models);
@@ -86,7 +88,7 @@ const Predictor = props => {
     //     const normalisedImage = tf.div(newImage, norm)
     //     const predictme = tf.cast(tf.expandDims(normalisedImage), 'float32')
     
-    //     const results = await classModel.predict(predictme).dataSync();
+    //     const results = await plantModel.predict(predictme).dataSync();
 
     //     const classLabels = ModelList.getClassNamesByPlant("Kacang");
     
@@ -113,41 +115,45 @@ const Predictor = props => {
         const predictme = tf.cast(tf.expandDims(normalisedImage), 'float32')
     
         //do initial prediction: determining main class
-        const classResults = await classModel.predict(predictme).dataSync();
+        const plantPredResults = await plantModel.predict(predictme).dataSync();
 
         //get the class with the max accuracy, and load the model
-        let maxAcc = Math.max.apply(Math,classResults);
-        const classLabel = classes[classResults.indexOf(maxAcc)];
-        setPredClass(classLabel);
+        let maxAcc = Math.max.apply(Math,plantPredResults);
+        const plantLabel = plantClasses[plantPredResults.indexOf(maxAcc)];
 
-        let interModel = interClassModels[classLabel];
+        console.log("PLANT CLASS IS: "+plantLabel);
+        setPredClass(plantLabel);
 
-        // console.log(interModel);
+        let diseaseModel = diseaseModels[plantLabel];
+
+        console.log("PLANT MODEL:\n"+diseaseModel);
 
         //do interclass prediction: determining plant diseasess
-        const classLabels = ModelList.getClassNamesByPlant(classes[classResults.indexOf(maxAcc)]);
-        const interClassResults = await interModel.predict(predictme).dataSync();
+        const diseaseLabels = ModelList.getClassNamesByPlant(plantClasses[plantPredResults.indexOf(maxAcc)]);
+        const diseaseClassResults = await diseaseModel.predict(predictme).dataSync();
 
         //calculate end prediction result
-        // console.log(interClassResults)
-        let maxAccInter = Math.max.apply(Math,interClassResults);
+        let maxAccDisease = Math.max.apply(Math,diseaseClassResults);
         // console.log("max disease: "+interClassResults.indexOf(maxAccInter));
-        let predictedClassInter = classLabels[interClassResults.indexOf(maxAccInter)];
-
+        let predictedClassDisease = diseaseLabels[diseaseClassResults.indexOf(maxAccDisease)];
+        
+        console.log("DISEASE CLASS IS: "+predictedClassDisease);
+        
         let examples = [];
         for(let i=0;i<3;i++){
             examples.push("http://localhost:5000/uploads/diseases/"+
-                            classLabel.replace(/\s/g, "_")+"-"
-                            +predictedClassInter.replace(/\s/g, "_")+"-"+(i+1)+".jpg");
+                            plantLabel.replace(/\s/g, "_")+"-"
+                            +predictedClassDisease.replace(/\s/g, "_")+"-"+(i+1)+".jpg");
         }
         setSampleImgs(examples);
         console.log(examples);
 
         // console.log("dieases is: "+predictedClassInter);
-        maxAccInter = maxAccInter.toFixed(2);
-        setPredInterClass(predictedClassInter);
-        setPredAcc(maxAccInter);
+        maxAccDisease = maxAccDisease.toFixed(2);
+        setPredInterClass(predictedClassDisease);
+        setPredAcc(maxAccDisease);
 
+        /*
         const formData = new FormData();
         formData.append("plant_name",classLabel);
         formData.append("disease_name",predictedClassInter);
@@ -164,7 +170,7 @@ const Predictor = props => {
         .catch((err)=>{
             console.log(err);
             setIsSubmitting(false);
-        })
+        })*/
     }
 
     return (
@@ -241,7 +247,7 @@ const Predictor = props => {
                                                     {
                                                         sampleImgs.map((sample)=>{
                                                             return(
-                                                                <div className="col-3 px-0">
+                                                                <div className="col-3">
                                                                     <img src={sample} className="rounded"/>
                                                                 </div>
                                                             )
