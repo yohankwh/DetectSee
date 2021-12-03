@@ -16,7 +16,7 @@ const PlantView = props => {
         PlantDataService.get(name)
         .then(res => {
             console.log(res);
-            setPlant(res.data.name);
+            setPlant(res.data);
             setDiseases(res.data.disease_names ? res.data.disease_names : []);
             const fetched = res.data.disease_names;
             const imgs = [];
@@ -44,14 +44,14 @@ const PlantView = props => {
         return (
             <>
                 <div className="content-title mb-5">
-                    <h2>Tanaman {plant}</h2>
-                    <span className="text-secondary">Tips merawat Tanaman {plant}</span>
+                    <h2>Tanaman {plant.name}</h2>
+                    <span className="text-secondary">Tips merawat Tanaman {plant.name}</span>
                 </div>
                 <div className="content-main">
                     <div>
                         <div className="mb-4">
                             <h4 className="mb-3">Tips dalam merawat</h4>
-                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellat, omnis fugit. Consequuntur, vel veritatis iure sequi maiores ea tempora dolorem debitis aspernatur ipsa quas magni repellat maxime odit reprehenderit facilis, dolores perferendis! Quod, vel necessitatibus?</p>
+                            <p>{plant.tips}</p>
                         </div>
                         <div className="mb-4">
                             <h4 className="mb-3">Penyakit dan Hama Umum</h4>

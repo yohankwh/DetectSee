@@ -76,8 +76,8 @@ function App() {
             <div className="sidenav-wrapper d-flex flex-column h-100 p-4 justify-content-between">
                 <div className="sidenav-item p-2 col d-flex justify-content-center align-items-center">
                     <div className="h-100 w-100 p-3">
-                        <div className="bg-active-nav h-100 w-100 rounded p-1">
-                            <Link to={"/"} className="normal-link active-nav">
+                        <div className="bg-normal-nav h-100 w-100 rounded p-1">{/*bg-active-nav*/}
+                            <Link to={"/"} className="normal-link normal-nav">{/*active-nav*/}
                                 <div className="h-100 d-flex justify-content-between p-2 align-items-center">
                                     <div className="col-3 d-flex justify-content-center align-items-center">
                                       <FontAwesomeIcon className="fa-2rem" icon={faHome}></FontAwesomeIcon>

@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import DiseasesDAO from './dao/diseasesDAO.js';
 import PredictionsDAO from './dao/predictionsDAO.js';
 import PlantsDAO from './dao/plantsDAO.js';
+import ImagesDAO from './dao/imageDiseasesDAO.js';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ MongoClient.connect(
     await DiseasesDAO.injectDB(client);
     await PredictionsDAO.injectDB(client);
     await PlantsDAO.injectDB(client);
+    await ImagesDAO.injectDB(client);
     
     app.listen(port, () => {
       console.log(`listening on port ${port}`)

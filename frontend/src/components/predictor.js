@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import * as tf from '@tensorflow/tfjs';
 import ModelList from '../tensorflow/model-list';
 import PredictionDataService from '../services/predictions';
+import DiseaseDataService from '../services/diseases';
 
 const Predictor = props => {
     //terminologies: Class -> Jenis Tanaman | InterClass/Type -> Jenis Penyakit
@@ -12,6 +13,7 @@ const Predictor = props => {
     const [isModelLoading, setIsModelLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasPredicted, setHasPredicted] = useState(false);
+    const [selectedModel, setSelectedModel] = useState("Default");
     //models
     const [plantModel, setPlantModel] = useState(null);
     const [diseaseModels, setDiseaseModels] = useState(null);
@@ -21,10 +23,12 @@ const Predictor = props => {
     const [predUrl, setPredUrl] = useState(null);
     const [sampleImgs, setSampleImgs] = useState([]);
     //results
-    const [predClass, setPredClass] = useState(null);
-    const [predInterClass, setPredInterClass] = useState(null);
+    const [predPlant, setPredPlant] = useState(null);
+    const [predDisease, setPredDisease] = useState(null);
     const [predAcc, setPredAcc] = useState(null)
-    //expected result: predClass - predInterClass
+    //expected result: predPlant - predDisease
+    //disease data
+    const [disease, setDisease] = useState(null);
 
     const imageRef = useRef();
 
@@ -78,29 +82,9 @@ const Predictor = props => {
         }
     }
 
-    // const identify-single = async () => {
-    //     const imageTensor = tf.browser.fromPixels(imageRef.current);
-    //     const newImage = tf.cast(
-    //         tf.image.resizeBilinear(imageTensor, [200, 200]),
-    //         'float32'
-    //     )
-    //     const norm = tf.fill([200, 200, 3], 255)
-    //     const normalisedImage = tf.div(newImage, norm)
-    //     const predictme = tf.cast(tf.expandDims(normalisedImage), 'float32')
-    
-    //     const results = await plantModel.predict(predictme).dataSync();
-
-    //     const classLabels = ModelList.getClassNamesByPlant("Kacang");
-    
-    //     console.log(results)
-    //     let maxAcc = Math.max.apply(Math,results);
-    //     let predictedClass = classLabels[results.indexOf(maxAcc)];
-    //     maxAcc = maxAcc.toFixed(2);
-    //     console.log("Kelas: "+predictedClass);
-    //     setPredInterClass(predictedClass);
-    //     console.log("Akurasi: "+maxAcc);
-    //     setPredAcc(maxAcc);
-    // }
+    const changeModel = async (e) => {
+        setSelectedModel(e.target.value);
+    }
 
     const identify = async () => {
         //convert image
@@ -113,30 +97,42 @@ const Predictor = props => {
         const norm = tf.fill([200, 200, 3], 255)
         const normalisedImage = tf.div(newImage, norm)
         const predictme = tf.cast(tf.expandDims(normalisedImage), 'float32')
-    
-        //do initial prediction: determining main class
-        const plantPredResults = await plantModel.predict(predictme).dataSync();
 
-        //get the class with the max accuracy, and load the model
-        let maxAcc = Math.max.apply(Math,plantPredResults);
-        const plantLabel = plantClasses[plantPredResults.indexOf(maxAcc)];
+        let plantLabel;
+        let predictedClassDisease;
+        let maxAccDisease;
+        if(selectedModel === "Default"){
+            //do initial prediction: determining main class
+            const plantPredResults = await plantModel.predict(predictme).dataSync();
 
-        console.log("PLANT CLASS IS: "+plantLabel);
-        setPredClass(plantLabel);
+            //get the class with the max accuracy, and load the model
+            let maxAcc = Math.max.apply(Math,plantPredResults);
+            plantLabel = plantClasses[plantPredResults.indexOf(maxAcc)];
 
-        let diseaseModel = diseaseModels[plantLabel];
+            console.log("PLANT CLASS IS: "+plantLabel);
+            setPredPlant(plantLabel);
 
-        console.log("PLANT MODEL:\n"+diseaseModel);
+            let diseaseModel = diseaseModels[plantLabel];
 
-        //do interclass prediction: determining plant diseasess
-        const diseaseLabels = ModelList.getClassNamesByPlant(plantClasses[plantPredResults.indexOf(maxAcc)]);
-        const diseaseClassResults = await diseaseModel.predict(predictme).dataSync();
+            console.log("PLANT MODEL:\n"+diseaseModel);
 
-        //calculate end prediction result
-        let maxAccDisease = Math.max.apply(Math,diseaseClassResults);
-        // console.log("max disease: "+interClassResults.indexOf(maxAccInter));
-        let predictedClassDisease = diseaseLabels[diseaseClassResults.indexOf(maxAccDisease)];
-        
+            //do interclass prediction: determining plant diseasess
+            const diseaseLabels = ModelList.getClassNamesByPlant(plantClasses[plantPredResults.indexOf(maxAcc)]);
+            const diseaseClassResults = await diseaseModel.predict(predictme).dataSync();
+
+            //calculate end prediction result
+            maxAccDisease = Math.max.apply(Math,diseaseClassResults);
+            // console.log("max disease: "+interClassResults.indexOf(maxAccInter));
+            predictedClassDisease = diseaseLabels[diseaseClassResults.indexOf(maxAccDisease)];
+        }else{
+            plantLabel=selectedModel;
+            setPredPlant(plantLabel);
+            const diseasesList = ModelList.getClassNamesByPlant(selectedModel);
+            let diseaseModel = diseaseModels[selectedModel];
+            const diseasePredResults = await diseaseModel.predict(predictme).dataSync();
+            maxAccDisease = Math.max.apply(Math,diseasePredResults);
+            predictedClassDisease = diseasesList[diseasePredResults.indexOf(maxAccDisease)];
+        }
         console.log("DISEASE CLASS IS: "+predictedClassDisease);
         
         let examples = [];
@@ -150,8 +146,18 @@ const Predictor = props => {
 
         // console.log("dieases is: "+predictedClassInter);
         maxAccDisease = maxAccDisease.toFixed(2);
-        setPredInterClass(predictedClassDisease);
+        setPredDisease(predictedClassDisease);
         setPredAcc(maxAccDisease);
+
+        //fetch disease data
+        DiseaseDataService.get(predictedClassDisease)
+        .then((fetched)=>{
+            setDisease(fetched.data);
+            console.log(fetched.data);
+        }
+        ).catch(err=>{
+            console.log(err);
+        });
 
         /*
         const formData = new FormData();
@@ -175,17 +181,23 @@ const Predictor = props => {
 
     return (
         <>
-            <div className="content-title mb-4">
-                <h2 className="text-center">Deteksi Tanaman Baru</h2>
+            <div className="content-title mb-3 text-center">
+                <h2 className="">Deteksi Tanaman Baru</h2>
+                <p className="mb-0">Pilih jenis tanaman atau deteksi langsung jenis penyakit</p>
             </div>
             <div className="content-main">
                 <div className="pb-4 border-bottom">
                     <div className="mb-3 d-flex justify-content-center">
                         <div className="bg-steps steps-col rounded w-75 border">
-                            <div className="container d-flex justify-content-center pt-4 pb-2 border-bottom">
-                                <small>Gunakan Kamera atau Unggah Foto</small>
+                            <div className="container d-flex py-2 border-bottom gap-3 justify-content-center">
+                                <button value="Default" onClick={changeModel} className="btn rounded border bg-light py-1 px-3 model-nav-active">Semua</button>
+                                <button value="Cabai" onClick={changeModel} className="btn rounded border bg-light py-1 px-3">Cabai</button>
+                                <button value="Kacang Panjang" onClick={changeModel} className="btn rounded border bg-light py-1 px-3">Kacang Panjang</button>
+                                <button value="Timun" onClick={changeModel} className="btn rounded border bg-light py-1 px-3">Timun</button>
+                                <button value="Tomat" onClick={changeModel} className="btn rounded border bg-light py-1 px-3">Tomat</button>
                             </div>
                             <div className="py-3">
+                                <p className="text-center"><small>Gunakan kamera atau unggah foto.</small></p>
                                 <div className="input-wrapper d-flex justify-content-center">
                                     <label className="items-center px-2 py-1 bg-white rounded" style={{cursor: "pointer"}}>
                                         <span className="text-base leading-normal">Ambil Foto</span>
@@ -218,7 +230,7 @@ const Predictor = props => {
                 </div>
                 {hasPredicted && 
                     <>
-                        {!isSubmitting && predInterClass ?
+                        {!isSubmitting && predDisease ?
                             <>
                                 <div className="d-flex justify-content-center">
                                     <div className="mb-3 py-3 text-center">
@@ -235,8 +247,8 @@ const Predictor = props => {
                                                 <div className="d-flex">
                                                     <div className="col">
                                                         <p className="text-end mb-0 font-08em"><i>Confidence: {parseInt(parseFloat(predAcc)*100)}%</i></p>
-                                                        <h5 className="mb-0">{predClass+" "+predInterClass}</h5>
-                                                        <p className="text-secondary mb-0">Deezospora Nuterillo</p>
+                                                        <h5 className="mb-0">{predPlant+" "+predDisease}</h5>
+                                                        <p className="text-secondary mb-0">{disease && disease.sp}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -247,7 +259,7 @@ const Predictor = props => {
                                                     {
                                                         sampleImgs.map((sample)=>{
                                                             return(
-                                                                <div className="col-3">
+                                                                <div className="col-4">
                                                                     <img src={sample} className="rounded"/>
                                                                 </div>
                                                             )
@@ -256,7 +268,7 @@ const Predictor = props => {
                                                 </div>
                                             </div>
                                             {
-                                                predInterClass==="Sehat"?
+                                                predDisease==="Sehat"?
                                                 <div className="pt-3">
                                                     <h5 className="text-center">Tanaman Anda Sehat!</h5>
                                                 </div>
@@ -264,17 +276,21 @@ const Predictor = props => {
                                                 <div className="pt-3">
                                                     <h5>Gejala</h5>
                                                     <ul className="ps-3">
-                                                        <li>Deez</li>
-                                                        <li>Nuts</li>
+                                                    {disease && disease.gejala && disease.gejala.length>0 && 
+                                                        disease.gejala.map((gejala, idx) => {
+                                                            return (
+                                                            <li>{gejala}</li>
+                                                        )})
+                                                    }
                                                     </ul>
                                                 </div>
                                             }
                                             
-                                            <p className="text-end"><Link to={"/history/"+predUrl}>Lihat Selengkapnya</Link></p>
+                                            <p className="text-end"><Link to={"/diseases/"+predDisease}>Lihat Selengkapnya</Link></p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="pred-card-wrap w-75 m-auto flex-row mb-4">
+                                {/* <div className="pred-card-wrap w-75 m-auto flex-row mb-4">
                                     <div className="pred-card border rounded shadow-sm p-3 pb-2 w-75 m-auto">
                                         <div>
                                             <div className="pb-2">
@@ -311,14 +327,14 @@ const Predictor = props => {
                                             <div className="pt-3">
                                                 <h5>Gejala</h5>
                                                 <ul className="ps-3">
-                                                    <li>Deez</li>
-                                                    <li>Nuts</li>
+                                                    <li>Abc</li>
+                                                    <li>Def</li>
                                                 </ul>
                                             </div>
                                             <p className="text-end"><a href="">Lihat Selengkapnya</a></p>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                             </>
                             :
                             <>

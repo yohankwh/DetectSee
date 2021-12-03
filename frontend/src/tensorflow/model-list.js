@@ -9,7 +9,7 @@ class ModelList{
               // code block
               break;
             case "Timun":
-                classNames = ["Hama Pengorok Daun","Hama Embun Bulu","Sehat"]
+                classNames = ["Hama Pengorok Daun","Penyakit Embun Bulu","Sehat"]
                 break;
             case "Tomat":
                 classNames = ["Hama Pengorok Daun","Sehat"];

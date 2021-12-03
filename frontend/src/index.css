@@ -246,3 +246,8 @@ body {
 .loading-mini{
   height: 1.5em;
 }
+
+.model-nav-active{
+  background-color: var(--primary-green)!important;
+  color: #000;
+}
