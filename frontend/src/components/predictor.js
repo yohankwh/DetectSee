@@ -190,11 +190,16 @@ const Predictor = props => {
                     <div className="mb-3 d-flex justify-content-center">
                         <div className="bg-steps steps-col rounded w-75 border">
                             <div className="container d-flex py-2 border-bottom gap-3 justify-content-center">
-                                <button value="Default" onClick={changeModel} className="btn rounded border bg-light py-1 px-3 model-nav-active">Semua</button>
-                                <button value="Cabai" onClick={changeModel} className="btn rounded border bg-light py-1 px-3">Cabai</button>
-                                <button value="Kacang Panjang" onClick={changeModel} className="btn rounded border bg-light py-1 px-3">Kacang Panjang</button>
-                                <button value="Timun" onClick={changeModel} className="btn rounded border bg-light py-1 px-3">Timun</button>
-                                <button value="Tomat" onClick={changeModel} className="btn rounded border bg-light py-1 px-3">Tomat</button>
+                                <button value="Default" onClick={changeModel}
+                                        className={`btn rounded border bg-light py-1 px-3 ${selectedModel === "Default" && "model-nav-active"}`}>Semua</button>
+                                <button value="Cabai" onClick={changeModel}
+                                        className={`btn rounded border bg-light py-1 px-3 ${selectedModel === "Cabai" && "model-nav-active"}`}>Cabai</button>
+                                <button value="Kacang Panjang" onClick={changeModel}
+                                        className={`btn rounded border bg-light py-1 px-3 ${selectedModel === "Kacang Panjang" && "model-nav-active"}`}>Kacang Panjang</button>
+                                <button value="Timun" onClick={changeModel}
+                                        className={`btn rounded border bg-light py-1 px-3 ${selectedModel === "Timun" && "model-nav-active"}`}>Timun</button>
+                                <button value="Tomat" onClick={changeModel}
+                                        className={`btn rounded border bg-light py-1 px-3 ${selectedModel === "Tomat" && "model-nav-active"}`}>Tomat</button>
                             </div>
                             <div className="py-3">
                                 <p className="text-center"><small>Gunakan kamera atau unggah foto.</small></p>
@@ -246,7 +251,7 @@ const Predictor = props => {
                                             <div className="pb-3">
                                                 <div className="d-flex">
                                                     <div className="col">
-                                                        <p className="text-end mb-0 font-08em"><i>Confidence: {parseInt(parseFloat(predAcc)*100)}%</i></p>
+                                                        <p className="text-end mb-0 font-08em"><b>Confidence: {parseInt(parseFloat(predAcc)*100)}%</b></p>
                                                         <h5 className="mb-0">{predPlant+" "+predDisease}</h5>
                                                         <p className="text-secondary mb-0">{disease && disease.sp}</p>
                                                     </div>
@@ -273,6 +278,7 @@ const Predictor = props => {
                                                     <h5 className="text-center">Tanaman Anda Sehat!</h5>
                                                 </div>
                                                 :
+                                                <>
                                                 <div className="pt-3">
                                                     <h5>Gejala</h5>
                                                     <ul className="ps-3">
@@ -284,9 +290,10 @@ const Predictor = props => {
                                                     }
                                                     </ul>
                                                 </div>
+                                                <p className="text-end"><Link to={"/diseases/"+predDisease}>Lihat Selengkapnya</Link></p>
+                                                </>
                                             }
                                             
-                                            <p className="text-end"><Link to={"/diseases/"+predDisease}>Lihat Selengkapnya</Link></p>
                                         </div>
                                     </div>
                                 </div>
