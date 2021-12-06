@@ -62,7 +62,7 @@ const Home = props => {
                     </div>
                 </div>
 
-                <div>
+                {/* <div>
                     <div className="d-flex justify-content-between mb-3">
                         <h4 className="">Diagnosis Sebelumnya</h4>
                         <Link to="/history" className="weight-500" style={{textDecoration:"none"}}>
@@ -102,7 +102,7 @@ const Home = props => {
                             
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );
