@@ -6,7 +6,7 @@ class ModelList{
                 classNames = ["Sehat","Hama Pengorok Daun"];
                 break;
             case "Cabai":
-              // code block
+                classNames = ["Penyakit Bercak Daun","Sehat"];
               break;
             case "Timun":
                 classNames = ["Hama Pengorok Daun","Penyakit Embun Bulu","Sehat"]

@@ -39,7 +39,7 @@ const Predictor = props => {
     const loadMainModel = async () => {
         setIsModelLoading(true);
         try{
-            const mainModel = await tf.loadGraphModel('models/Plant/no_gambas/model.json');
+            const mainModel = await tf.loadGraphModel('models/Plant/model.json');
             setPlantModel(mainModel);
             setIsModelLoading(false);
             console.log("finished loading main model");
@@ -56,9 +56,7 @@ const Predictor = props => {
         setIsModelLoading(true);
         try{
             for(const class_name of plantClasses ){
-                if(class_name!=="Cabai"){
-                    models[class_name] = await tf.loadGraphModel('models/'+class_name+'/model.json');
-                }
+                models[class_name] = await tf.loadGraphModel('models/'+class_name+'/model.json');
             }
             setDiseaseModels(models);
             setIsModelLoading(false);
@@ -109,12 +107,9 @@ const Predictor = props => {
             let maxAcc = Math.max.apply(Math,plantPredResults);
             plantLabel = plantClasses[plantPredResults.indexOf(maxAcc)];
 
-            console.log("PLANT CLASS IS: "+plantLabel);
             setPredPlant(plantLabel);
 
             let diseaseModel = diseaseModels[plantLabel];
-
-            console.log("PLANT MODEL:\n"+diseaseModel);
 
             //do interclass prediction: determining plant diseasess
             const diseaseLabels = ModelList.getClassNamesByPlant(plantClasses[plantPredResults.indexOf(maxAcc)]);
@@ -133,7 +128,6 @@ const Predictor = props => {
             maxAccDisease = Math.max.apply(Math,diseasePredResults);
             predictedClassDisease = diseasesList[diseasePredResults.indexOf(maxAccDisease)];
         }
-        console.log("DISEASE CLASS IS: "+predictedClassDisease);
         
         let examples = [];
         for(let i=0;i<3;i++){
@@ -142,7 +136,6 @@ const Predictor = props => {
                             +predictedClassDisease.replace(/\s/g, "_")+"-"+(i+1)+".jpg");
         }
         setSampleImgs(examples);
-        console.log(examples);
 
         // console.log("dieases is: "+predictedClassInter);
         maxAccDisease = maxAccDisease.toFixed(2);
