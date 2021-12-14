@@ -61,7 +61,6 @@ const Predictor = props => {
             setDiseaseModels(models);
             setIsModelLoading(false);
             console.log("finished loading all models");
-            console.log(models);
         }catch(err){
             console.log(err);
             setIsModelLoading(false);
@@ -146,7 +145,6 @@ const Predictor = props => {
         DiseaseDataService.get(predictedClassDisease)
         .then((fetched)=>{
             setDisease(fetched.data);
-            console.log(fetched.data);
         }
         ).catch(err=>{
             console.log(err);
@@ -255,9 +253,9 @@ const Predictor = props => {
                                             <div className="pred-card-images container py-2">
                                                 <div className="row justify-content-center">
                                                     {
-                                                        sampleImgs.map((sample)=>{
+                                                        sampleImgs.map((sample, idx)=>{
                                                             return(
-                                                                <div className="col-4">
+                                                                <div key={idx} className="col-4">
                                                                     <img src={sample} className="rounded"/>
                                                                 </div>
                                                             )
@@ -278,7 +276,7 @@ const Predictor = props => {
                                                     {disease && disease.gejala && disease.gejala.length>0 && 
                                                         disease.gejala.map((gejala, idx) => {
                                                             return (
-                                                            <li>{gejala}</li>
+                                                            <li key={idx}>{gejala}</li>
                                                         )})
                                                     }
                                                     </ul>

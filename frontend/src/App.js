@@ -73,9 +73,9 @@ function App() {
       <div className="content-wrapper">
         <div className="d-flex h-100">
           <div className="col-3 d-sm-block d-none w-22-5">
-            <div className="sidenav-wrapper d-flex flex-column h-100 p-4 justify-content-between">
-                <div className="sidenav-item p-2 col d-flex justify-content-center align-items-center">
-                    <div className="h-100 w-100 p-3">
+            <div className="sidenav-wrapper d-flex flex-column h-100 p-4">
+                <div className="sidenav-item p-2">
+                    <div className="w-75 p-3">
                         <div className="bg-normal-nav h-100 w-100 rounded p-1">{/*bg-active-nav*/}
                             <Link to={"/"} className="normal-link normal-nav">{/*active-nav*/}
                                 <div className="h-100 d-flex justify-content-between p-3 align-items-center">
@@ -90,8 +90,8 @@ function App() {
                         </div>
                     </div>
                 </div>
-                <div className="sidenav-item p-2 col d-flex justify-content-center align-items-center">
-                    <div className="h-100 w-100 p-3">
+                <div className="sidenav-item p-2">
+                    <div className="w-75 p-3">
                         <div className="bg-normal-nav h-100 w-100 rounded p-1">
                             <Link to={"/predict"} className="normal-link normal-nav">
                                 <div className="h-100 d-flex justify-content-between p-3 align-items-center">
@@ -106,8 +106,8 @@ function App() {
                         </div>
                     </div>
                 </div>
-                <div className="sidenav-item p-2 col d-flex justify-content-center align-items-center">
-                    <div className="h-100 w-100 p-3">
+                <div className="sidenav-item p-2">
+                    <div className="w-75 p-3">
                         <div className="bg-normal-nav h-100 w-100 rounded p-1">
                             <Link to={"/plants"} className="normal-link normal-nav">
                                 <div className="h-100 d-flex justify-content-between p-3 align-items-center">
