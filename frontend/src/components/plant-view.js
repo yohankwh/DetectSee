@@ -15,16 +15,13 @@ const PlantView = props => {
     const fetchPlantByName = (name) => {
         PlantDataService.get(name)
         .then(res => {
-            console.log(res);
             setPlant(res.data);
             setDiseases(res.data.disease_names ? res.data.disease_names : []);
             const fetched = res.data.disease_names;
             const imgs = [];
             fetched.forEach((val, idx)=>{
                 let img = "http://localhost:5000/uploads/diseases/"+res.data.name+"-"+val+"-1.jpg";
-                console.log(img+"A")
                 img = img.replace(/\s/g, "_");
-                console.log(img+"B")
                 imgs.push(img);
             });
             setDiseaseImgs(imgs);

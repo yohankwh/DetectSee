@@ -29,7 +29,6 @@ const DiseaseView = props => {
             let urls = fetched.data;
             urls = urls.map(url => 'http://localhost:5000/uploads/diseases/'+url);
             setImgUrls(urls);
-            console.log(fetched.data);
         }).catch(err => {
             console.log(err);
         })

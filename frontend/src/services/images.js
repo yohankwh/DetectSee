@@ -2,7 +2,7 @@ import http from '../http-common';
 
 class ImageDataService{
     getDiseaseImgs(id) {
-        console.log(`/images/${id}`);
+        console.log(id);
         return http.get(`/images/${id}`);
     }
 }
