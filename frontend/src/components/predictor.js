@@ -11,7 +11,7 @@ const Predictor = props => {
 
     //statuses
     const [isModelLoading, setIsModelLoading] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isPredicting, setIsPredicting] = useState(false);
     const [hasPredicted, setHasPredicted] = useState(false);
     const [selectedModel, setSelectedModel] = useState("Default");
     //models
@@ -86,6 +86,7 @@ const Predictor = props => {
     const identify = async () => {
         //convert image
         setHasPredicted(true);
+        setIsPredicting(true);
         const imageTensor = tf.browser.fromPixels(imageRef.current);
         const newImage = tf.cast(
             tf.image.resizeBilinear(imageTensor, [200, 200]),
@@ -149,6 +150,8 @@ const Predictor = props => {
         ).catch(err=>{
             console.log(err);
         });
+
+        setIsPredicting(false);
 
         /*
         const formData = new FormData();
@@ -226,7 +229,7 @@ const Predictor = props => {
                 </div>
                 {hasPredicted && 
                     <>
-                        {!isSubmitting && predDisease ?
+                        {!isPredicting && predDisease ?
                             <>
                                 <div className="d-flex justify-content-center">
                                     <div className="mb-3 py-3 text-center">
