@@ -176,7 +176,7 @@ const Predictor = props => {
     return (
         <>
             <div className="content-title mb-3 text-center">
-                <h2 className="">Deteksi Tanaman Baru</h2>
+                <h2 className="">Deteksi Penyakit Tanaman</h2>
                 <p className="mb-0">Pilih jenis tanaman atau deteksi langsung jenis penyakit</p>
             </div>
             <div className="content-main">
@@ -185,7 +185,7 @@ const Predictor = props => {
                         <div className="bg-steps steps-col rounded w-75 border">
                             <div className="container d-flex py-2 border-bottom gap-3 justify-content-center">
                                 <button value="Default" onClick={changeModel}
-                                        className={`btn rounded border bg-light py-1 px-3 ${selectedModel === "Default" && "model-nav-active"}`}>Semua</button>
+                                        className={`btn rounded border bg-light py-1 px-3 ${selectedModel === "Default" && "model-nav-active"}`}>Semua Jenis</button>
                                 <button value="Cabai" onClick={changeModel}
                                         className={`btn rounded border bg-light py-1 px-3 ${selectedModel === "Cabai" && "model-nav-active"}`}>Cabai</button>
                                 <button value="Kacang Panjang" onClick={changeModel}
