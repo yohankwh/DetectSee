@@ -1,6 +1,6 @@
 # DetectSee
 A simple app for Image-Based Plant Disease Analysis.
-This app was meant to be used as a way to demonstrate CNN model deployment. 
+This app was meant to be used as a way to demonstrate CNN model deployment.
 
-## Fitur Prediksi
+## Fitur Prediksi dengan TensorFlow.js
 Contoh penggunaan model dapat dilihat pada file frontend/src/components/predictor.js 
