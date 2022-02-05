@@ -1,6 +1,2 @@
 .env
 /node_modules
-!/uploads/
-/uploads/**
-!/uploads/plants/
-!/uploads/plants/**
