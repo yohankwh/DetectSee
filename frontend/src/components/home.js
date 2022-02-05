@@ -1,26 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom';
-import PredictionDataService from '../services/predictions';
 
 const Home = props => {
-    const [recentPredictions, setRecentPredictions] = useState([]);
-
-    useEffect(()=>{
-        loadRecentPredicitions();
-    },[]);
-
-    const loadRecentPredicitions = () => {
-        PredictionDataService.getSome()
-        .then((fetched)=>{
-            setRecentPredictions(fetched.data.predictions)
-            console.log(fetched);
-        })
-        .catch((err)=>{
-            console.log(err);
-        });
-
-    }
-
     return (
         <div>
             <div className="content-title mb-5">
@@ -62,47 +43,6 @@ const Home = props => {
                     </div>
                 </div>
 
-                {/* <div>
-                    <div className="d-flex justify-content-between mb-3">
-                        <h4 className="">Diagnosis Sebelumnya</h4>
-                        <Link to="/history" className="weight-500" style={{textDecoration:"none"}}>
-                            <p>Lihat semua</p>
-                        </Link>
-                    </div>
-                    <div className="prev-preds container">
-                        <div className="row">
-                            {recentPredictions && recentPredictions.length > 0 ?
-                                recentPredictions.map((pred) => {
-                                    return (
-                                        <div className="col-sm-4 mb-4 d-flex ps-0 pe-3">
-                                            <Link to={"/history/"+pred._id} className="normal-link shadow-sm border rounded w-100">
-                                                <div className="resp-card-img rounded">
-                                                    <img src="assets/example.jpg" className="rounded-top" alt="predicted image"/>
-                                                </div>
-                                                <div className="w-100 p-2">
-                                                    <div>
-                                                        <p className="mb-0 prev-pred-title">{pred.plant_name} {pred.disease_name}</p>
-                                                    </div>
-                                                    <span>
-                                                        <small>
-                                                        {new Date(pred.date).toLocaleString('id-ID',
-                                                        { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                                                        </small>
-                                                    </span>
-                                                </div>
-                                            </Link>
-                                        </div>
-                                    )}
-                                )
-                                :
-                                <p className="text-secondary">
-                                    Belum ada diagnosis, <Link to="/predict">buat sekarang</Link>?
-                                </p>
-                            }
-                            
-                        </div>
-                    </div>
-                </div> */}
             </div>
         </div>
     );

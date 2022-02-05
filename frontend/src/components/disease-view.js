@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import DiseaseDataService from '../services/diseases';
 import ImageDataService from '../services/images';
-import {Link} from 'react-router-dom';
 
 const DiseaseView = props => {
     const [disease, setDisease] = useState(null);

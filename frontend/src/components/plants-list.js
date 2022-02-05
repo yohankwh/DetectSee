@@ -4,17 +4,10 @@ import {Link} from 'react-router-dom';
 
 const PlantsList = props => {
     const [plants, setPlants] = useState([]);
-    const [queryName, setQueryName] = useState("");
 
     useEffect(()=>{
         retrievePlants();
     }, []);
-
-    const onChangeQueryName = e =>{
-        const queryName = e.target.value;
-        setQueryName(queryName);
-        console.log(queryName);
-    };
 
     const retrievePlants = ()=>{
         PlantDataService.getAll()
@@ -26,17 +19,6 @@ const PlantsList = props => {
             console.log(err);
         });
     }
-
-    const findByName = () => {
-        PlantDataService.find(queryName)
-        .then(response => {
-            console.log(response.data);
-            setPlants(response.data.plants);
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
-    };
 
     return (
         <>

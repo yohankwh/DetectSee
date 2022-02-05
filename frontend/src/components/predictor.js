@@ -2,7 +2,6 @@ import React, {useState, useEffect, useRef} from 'react';
 import {Link} from 'react-router-dom';
 import * as tf from '@tensorflow/tfjs';
 import ModelList from '../tensorflow/model-list';
-import PredictionDataService from '../services/predictions';
 import DiseaseDataService from '../services/diseases';
 
 const Predictor = props => {
@@ -20,7 +19,6 @@ const Predictor = props => {
     //attributes
     const [imageUrl, setImageUrl] = useState(null);
     const [imageUp, setImageUp] = useState(null);
-    const [predUrl, setPredUrl] = useState(null);
     const [sampleImgs, setSampleImgs] = useState([]);
     //results
     const [predPlant, setPredPlant] = useState(null);
@@ -152,25 +150,6 @@ const Predictor = props => {
         });
 
         setIsPredicting(false);
-
-        /*
-        const formData = new FormData();
-        formData.append("plant_name",classLabel);
-        formData.append("disease_name",predictedClassInter);
-        formData.append("confidence",parseFloat(maxAccInter));
-        formData.append("image_plant",imageUp);
-
-        //submit post data
-        setIsSubmitting(true);
-        PredictionDataService.post(formData)
-        .then((res)=>{
-            setPredUrl(res.data.inserted_id);
-            setIsSubmitting(false);
-        })
-        .catch((err)=>{
-            console.log(err);
-            setIsSubmitting(false);
-        })*/
     }
 
     return (
@@ -205,7 +184,7 @@ const Predictor = props => {
                                 </div>
                                 <div className="image-wrapper p-2 d-flex justify-content-center">
                                     <div className="image-holder bg-light m-auto">
-                                        {imageUrl && <img src={imageUrl} crossOrigin="anonymous" ref={imageRef}/>}
+                                        {imageUrl && <img alt="plant to predict" src={imageUrl} crossOrigin="anonymous" ref={imageRef}/>}
                                     </div>
                                 </div>
                             </div>
@@ -259,7 +238,7 @@ const Predictor = props => {
                                                         sampleImgs.map((sample, idx)=>{
                                                             return(
                                                                 <div key={idx} className="col-4">
-                                                                    <img src={sample} className="rounded"/>
+                                                                    <img alt="plant diseases" src={sample} className="rounded"/>
                                                                 </div>
                                                             )
                                                         })
@@ -291,51 +270,6 @@ const Predictor = props => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* <div className="pred-card-wrap w-75 m-auto flex-row mb-4">
-                                    <div className="pred-card border rounded shadow-sm p-3 pb-2 w-75 m-auto">
-                                        <div>
-                                            <div className="pb-2">
-                                                <div className="d-flex">
-                                                    <div className="col">
-                                                        <p className="text-end mb-0 font-08em"><i>Confidence: 69%</i></p>
-                                                        <h5 className="mb-0">Tanaman Hama Tulis</h5>
-                                                        <p className="text-secondary mb-0">Deezospora Nuterillo</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex justify-content-center">
-                                                <button className="btn collapse-btn"
-                                                data-toggle="collapse" data-target="#pred-2"
-                                                aria-expanded="false" aria-controls="pred-2">
-                                                    <p className="mb-0 text-center text-secondary font-08em">klik untuk detail</p>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="collapse" id="pred-2">
-                                            <div className="pred-card-images container py-2">
-                                                <div className="row justify-content-center">
-                                                    <div className="col-3 px-0">
-                                                        <img src="assets/example.jpg" className="rounded"/>
-                                                    </div>
-                                                    <div className="col-3 px-0 mx-3">
-                                                        <img src="assets/example.jpg" className="rounded"/>
-                                                    </div>
-                                                    <div className="col-3 px-0">
-                                                        <img src="assets/example.jpg" className="rounded"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="pt-3">
-                                                <h5>Gejala</h5>
-                                                <ul className="ps-3">
-                                                    <li>Abc</li>
-                                                    <li>Def</li>
-                                                </ul>
-                                            </div>
-                                            <p className="text-end"><a href="">Lihat Selengkapnya</a></p>
-                                        </div>
-                                    </div>
-                                </div> */}
                             </>
                             :
                             <>

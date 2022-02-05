@@ -13,14 +13,6 @@ class PlantDataService{
     find(query, page = 0) {
         return http.get(`/plants?${"name"}=${query}&page=${page}`);
     } 
-
-    // createReview(data) {
-    //     return http.post("/review-new", data);
-    // }
-
-    // deleteReview(id, userId) {
-    //     return http.delete(`/review-delete?id=${id}`, {data:{user_id: userId}});
-    // }
 }
 
 export default new PlantDataService();
